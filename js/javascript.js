@@ -16,17 +16,19 @@ const gameBoard = (() => {
 
     // clear board
     const clearBoard = () => {
+        for (let i = 0; i < board.length; i++) {
+            board[i] = "";
+        }
+
         fields.forEach((field) => {
             field.innerText = "";
             field.style.pointerEvents = "auto";
-            game.remainingSpots = 9;
         });
-        message.innerText = "New game. Player 1, make your move."
-        return board = ["", "", "", "", "", "", "", "", ""];
+        message.innerText = "New game. Player 1, make your move.";
     };
 
     // clickable cells
-    Array.from(fields).forEach((field, index) => {
+    fields.forEach((field, index) => {
         field.addEventListener("click", () => {
             // fill the sqaure with appropriate marker
             field.innerText = game.activePlayer.marker;
@@ -38,6 +40,8 @@ const gameBoard = (() => {
             board[index] = game.activePlayer.marker;
             // check winner
             game.checkWinner();
+            //console.log board after each click
+            console.log(board);
 
             if (game.winnerDeclared === false) {
                 if (game.remainingSpots > 0) {
@@ -49,7 +53,6 @@ const gameBoard = (() => {
             }
         }); 
     });
-
 
     return { 
         board,
@@ -100,8 +103,9 @@ const game = (() => {
     }
 
     // restart button
-    restartButton.addEventListener("click", () => {
-        console.log(gameBoard.clearBoard());
+    restartButton.addEventListener("click", (e) => {
+        gameBoard.clearBoard();
+        game.reset();
     });
 
     // winning conditions
@@ -129,6 +133,12 @@ const game = (() => {
         });
     }
 
+    function reset() {
+        this.remainingSpots = 9;
+        this.activePlayer = player1;
+        this.winnerDeclared = false;
+    };
+
     // return
     return {
         nextPlayer,
@@ -139,5 +149,6 @@ const game = (() => {
         activePlayer,
         remainingSpots,
         checkWinner,
+        reset
     };
 })();
